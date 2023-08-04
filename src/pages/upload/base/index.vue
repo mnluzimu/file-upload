@@ -17,14 +17,14 @@
           <!-- 合同名称,合同类型 -->
           <t-row class="row-gap" :gutter="[16, 24]">
             <t-col :span="6">
-              <t-form-item label="任务名称" name="name">
-                <t-input v-model="formData.name" :style="{ width: '322px' }" placeholder="请输入内容" />
+              <t-form-item label="用户名" name="name">
+                <t-input v-model="formData.user" :style="{ width: '322px' }" placeholder="请输入内容" />
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="合同类型" name="type">
+              <t-form-item label="模型类型" name="type">
                 <t-select
-                  v-model="formData.type"
+                  v-model="formData.model"
                   :style="{ width: '322px' }"
                   placeholder="请选择类型"
                   class="demo-select-base"
@@ -37,110 +37,36 @@
               </t-form-item>
             </t-col>
 
-            <!-- 合同收付类型 -->
-            <t-col :span="8">
-              <t-form-item label="合同收付类型" name="payment">
-                <t-radio-group v-model="formData.payment">
-                  <t-radio value="1"> 收款 </t-radio>
-                  <t-radio value="2"> 付款 </t-radio>
-                </t-radio-group>
-                <span class="space-item" />
-                <t-input placeholder="请输入金额" :style="{ width: '160px' }" />
+            <t-col :span="6">
+              <t-form-item label="申请配额" name="partyB">
+                <t-input-number
+                  v-model="formData.quota"
+                  :step="0.18"
+                  :max="100"
+                  :min="0"
+                  :allow-input-over-limit="false"
+                  style="width: 200px"
+                />
               </t-form-item>
             </t-col>
+            
 
             <t-col :span="6">
-              <t-form-item label="甲方" name="partyA">
-                <t-select
-                  v-model="formData.partyA"
-                  :style="{ width: '322px' }"
-                  class="demo-select-base"
-                  placeholder="请选择类型"
-                  clearable
-                >
-                  <t-option v-for="(item, index) in partyAOptions" :key="index" :value="item.value" :label="item.label">
-                    {{ item.label }}
-                  </t-option>
-                </t-select>
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="乙方" name="partyB">
-                <t-select
-                  v-model="formData.partyB"
-                  :style="{ width: '322px' }"
-                  placeholder="请选择类型"
-                  class="demo-select-base"
-                  clearable
-                >
-                  <t-option v-for="(item, index) in partyBOptions" :key="index" :value="item.value" :label="item.label">
-                    {{ item.label }}
-                  </t-option>
-                </t-select>
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="合同签订日期" name="signDate">
-                <t-date-picker
-                  v-model="formData.signDate"
-                  :style="{ width: '322px' }"
-                  theme="primary"
-                  mode="date"
-                  separator="/"
-                />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="合同生效日期" name="startDate">
-                <t-date-picker
-                  v-model="formData.startDate"
-                  :style="{ width: '322px' }"
-                  theme="primary"
-                  mode="date"
-                  separator="/"
-                />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="合同结束日期" name="endDate">
-                <t-date-picker
-                  v-model="formData.endDate"
-                  :style="{ width: '322px' }"
-                  theme="primary"
-                  mode="date"
-                  separator="/"
-                />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="" name="files">
+              <t-form-item label="上传文件" name="files">
                 <t-upload
-                  v-model="formData.files"
+                  v-model="formData.file"
                   action="https://service-bv448zsw-1257786608.gz.apigw.tencentcs.com/api/upload-demo"
-                  tips="请上传pdf文件，大小在60M以内"
-                  :size-limit="{ size: 60, unit: 'MB' }"
+                  tips="请上传文件，大小在60M以内"
+                  :size-limit="{ size: 300, unit: 'MB' }"
                   :format-response="formatResponse"
                   :before-upload="beforeUpload"
                   @fail="handleFail"
                 >
-                  <t-button class="form-submit-upload-btn" variant="outline"> 上传合同文件 </t-button>
+                  <t-button class="form-submit-upload-btn" variant="outline"> 上传测试文件 </t-button>
                 </t-upload>
               </t-form-item>
             </t-col>
           </t-row>
-
-          <div class="form-basic-container-title form-title-gap">其它信息</div>
-
-          <t-form-item label="备注" name="comment">
-            <t-textarea v-model="formData.comment" :height="124" placeholder="请输入备注" />
-          </t-form-item>
-          <t-form-item label="公证人">
-            <t-avatar-group>
-              <t-avatar>D</t-avatar>
-              <t-avatar>S</t-avatar>
-              <t-avatar>+</t-avatar>
-            </t-avatar-group>
-          </t-form-item>
         </div>
       </div>
 
@@ -159,17 +85,10 @@
 import { prefix } from '@/config/global';
 
 const INITIAL_DATA = {
-  name: '',
-  type: '',
-  partyA: '',
-  partyB: '',
-  signDate: '',
-  startDate: '',
-  endDate: '',
-  payment: '1',
-  amount: 0,
-  comment: '',
-  files: [],
+  user: '',
+  model: '',
+  quota: '',
+  file: [],
 };
 const FORM_RULES = {
   name: [{ required: true, message: '请输入合同名称', type: 'error' }],
@@ -192,9 +111,9 @@ export default {
       formData: { ...INITIAL_DATA },
       FORM_RULES,
       typeOptions: [
-        { label: '类型A', value: '1' },
-        { label: '类型B', value: '2' },
-        { label: '类型C', value: '3' },
+        { label: 'GPT-4', value: 'gpt-4' },
+        { label: 'GPT-4 code interpreter', value: 'gpt-4-code' },
+        { label: 'GPT-3.5', value: 'gpt-3' },
       ],
       partyAOptions: [
         { label: '公司A', value: '1' },
