@@ -54,7 +54,7 @@
           </template>
 
           <template #op="slotProps">
-            <a class="t-button-link" @click="handleClickDetail()">详情</a>
+            <!-- <a class="t-button-link" @click="handleClickDetail()">详情</a> -->
             <a class="t-button-link" @click="handleClickDelete(slotProps)">删除</a>
           </template>
         </t-table>

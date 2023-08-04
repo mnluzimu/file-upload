@@ -17,12 +17,12 @@
           <!-- 合同名称,合同类型 -->
           <t-row class="row-gap" :gutter="[16, 24]">
             <t-col :span="6">
-              <t-form-item label="用户名" name="name">
+              <t-form-item label="用户名" name="user">
                 <t-input v-model="formData.user" :style="{ width: '322px' }" placeholder="请输入内容" />
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="模型类型" name="type">
+              <t-form-item label="模型类型" name="model">
                 <t-select
                   v-model="formData.model"
                   :style="{ width: '322px' }"
@@ -38,10 +38,9 @@
             </t-col>
 
             <t-col :span="6">
-              <t-form-item label="申请配额" name="partyB">
+              <t-form-item label="申请配额" name="quota">
                 <t-input-number
                   v-model="formData.quota"
-                  :step="0.18"
                   :max="100"
                   :min="0"
                   :allow-input-over-limit="false"
@@ -52,23 +51,28 @@
             
 
             <t-col :span="6">
-              <t-form-item label="上传文件" name="files">
-                <t-upload
+              <t-form-item label="上传文件" name="file">
+                <!-- <t-upload
                   v-model="formData.file"
-                  action="https://service-bv448zsw-1257786608.gz.apigw.tencentcs.com/api/upload-demo"
-                  tips="请上传文件，大小在60M以内"
+                  action="http://10.158.217.11:8080/task"
+                  tips="请上传文件，大小在300M以内"
                   :size-limit="{ size: 300, unit: 'MB' }"
                   :format-response="formatResponse"
                   :before-upload="beforeUpload"
                   @fail="handleFail"
                 >
                   <t-button class="form-submit-upload-btn" variant="outline"> 上传测试文件 </t-button>
-                </t-upload>
+                </t-upload> -->
+                <input type="file" ref="fileInput" />
               </t-form-item>
             </t-col>
           </t-row>
         </div>
       </div>
+      <!-- <p>{{ formData.user }}</p>
+      <p>{{ formData.model }}</p>
+      <p>{{ formData.quota }}</p>
+      <p>{{ formData.file[0] }}</p> -->
 
       <div class="form-submit-container">
         <div class="form-submit-sub">
@@ -91,15 +95,9 @@ const INITIAL_DATA = {
   file: [],
 };
 const FORM_RULES = {
-  name: [{ required: true, message: '请输入合同名称', type: 'error' }],
-  type: [{ required: true, message: '请选择合同类型', type: 'error' }],
-  payment: [{ required: true, message: '请选择合同收付类型', type: 'error' }],
-  amount: [{ required: true, message: '请输入合同金额', type: 'error' }],
-  partyA: [{ required: true, message: '请选择甲方', type: 'error' }],
-  partyB: [{ required: true, message: '请选择乙方', type: 'error' }],
-  signDate: [{ required: true, message: '请选择日期', type: 'error' }],
-  startDate: [{ required: true, message: '请选择日期', type: 'error' }],
-  endDate: [{ required: true, message: '请选择日期', type: 'error' }],
+  user: [{ required: true, message: '请输入用户名', type: 'error' }],
+  model: [{ required: true, message: '请选择模型', type: 'error' }],
+  quota: [{ required: true, message: '请填写配额', type: 'error' }],
 };
 
 export default {
@@ -115,28 +113,6 @@ export default {
         { label: 'GPT-4 code interpreter', value: 'gpt-4-code' },
         { label: 'GPT-3.5', value: 'gpt-3' },
       ],
-      partyAOptions: [
-        { label: '公司A', value: '1' },
-        { label: '公司B', value: '2' },
-        { label: '公司C', value: '3' },
-      ],
-      partyBOptions: [
-        { label: '公司A', value: '1' },
-        { label: '公司B', value: '2' },
-        { label: '公司C', value: '3' },
-      ],
-      textareaValue: '',
-      rules: {
-        name: [{ required: true, message: '请输入合同名称', type: 'error' }],
-        type: [{ required: true, message: '请选择合同类型', type: 'error' }],
-        payment: [{ required: true, message: '请选择合同收付类型', type: 'error' }],
-        amount: [{ required: true, message: '请输入合同金额', type: 'error' }],
-        partyA: [{ required: true, message: '请选择甲方', type: 'error' }],
-        partyB: [{ required: true, message: '请选择乙方', type: 'error' }],
-        signDate: [{ required: true, message: '请选择日期', type: 'error' }],
-        startDate: [{ required: true, message: '请选择日期', type: 'error' }],
-        endDate: [{ required: true, message: '请选择日期', type: 'error' }],
-      },
     };
   },
   methods: {
@@ -144,10 +120,6 @@ export default {
       this.$message.error(`文件 ${file.name} 上传失败`);
     },
     beforeUpload(file) {
-      if (!/\.(pdf)$/.test(file.name)) {
-        this.$message.warning('请上传pdf文件');
-        return false;
-      }
       return true;
     },
     // 用于格式化接口响应值，error 会被用于上传失败的提示文字；url 表示文件/图片地址
@@ -163,6 +135,26 @@ export default {
     onSubmit({ validateResult }) {
       if (validateResult === true) {
         this.$message.success('新建成功');
+        const formData = new FormData();
+
+        console.log(this.$refs.fileInput.files[0])
+        formData.append('file', this.$refs.fileInput.files[0]);
+        formData.append('user', "wangke");
+        formData.append('model', "gpt-4");
+
+        this.$request.post("http://10.158.217.11:8080/task", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(response => {
+          console.log('File uploaded successfully', response.data);
+          // Do something with the response
+        })
+        .catch(error => {
+          console.error('Error uploading file', error);
+          // Handle the error
+        });
       }
     },
   },
