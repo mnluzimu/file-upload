@@ -3,15 +3,15 @@
     <t-card class="list-card-container" :bordered="false">
       <t-row justify="space-between">
         <div class="left-operation-container">
-          <t-button @click="handleSetupContract"> 新建任务 </t-button>
+          <t-button @click="handleCreateTask"> 新建任务 </t-button>
           <!-- <t-button variant="base" theme="default" :disabled="!selectedRowKeys.length"> 导出合同 </t-button> -->
-          <p v-if="!!selectedRowKeys.length" class="selected-count">已选{{ selectedRowKeys.length }}项</p>
+          <!-- <p v-if="!!selectedRowKeys.length" class="selected-count">已选{{ selectedRowKeys.length }}项</p> -->
         </div>
-        <t-input v-model="searchValue" class="search-input" placeholder="请输入你需要搜索的内容" clearable>
+        <!-- <t-input v-model="searchValue" class="search-input" placeholder="请输入你需要搜索的内容" clearable>
           <template #suffix-icon>
             <search-icon size="20px" />
           </template>
-        </t-input>
+        </t-input> -->
       </t-row>
 
       <div class="table-container">
@@ -96,44 +96,43 @@ export default Vue.extend({
       selectedRowKeys: [1, 2],
       value: 'first',
       columns: [
-        { colKey: 'row-select', type: 'multiple', width: 64, fixed: 'left' },
+        // { colKey: 'row-select', type: 'multiple', width: 64, fixed: 'left' },
         {
-          title: '合同名称',
+          title: '任务编号',
           align: 'left',
-          width: 250,
+          width: 150,
           ellipsis: true,
-          colKey: 'name',
+          colKey: 'id',
           fixed: 'left',
         },
-        { title: '合同状态', colKey: 'status', width: 200, cell: { col: 'status' } },
         {
-          title: '合同编号',
-          width: 200,
-          ellipsis: true,
-          colKey: 'no',
+          title: '任务状态',
+          colKey: 'status',
+          width: 150,
+          cell: { col: 'status' }
         },
         {
-          title: '合同类型',
-          width: 200,
+          title: '用户名',
+          width: 150,
           ellipsis: true,
-          colKey: 'contractType',
+          colKey: 'user',
         },
         {
-          title: '合同收付类型',
-          width: 200,
+          title: '任务配额',
+          width: 150,
           ellipsis: true,
-          colKey: 'paymentType',
+          colKey: 'quota',
         },
         {
-          title: '合同金额 (元)',
-          width: 200,
+          title: '模型类型',
+          width: 150,
           ellipsis: true,
-          colKey: 'amount',
+          colKey: 'model',
         },
         {
           align: 'left',
           fixed: 'right',
-          width: 200,
+          width: 150,
           colKey: 'op',
           title: '操作',
         },
@@ -169,7 +168,7 @@ export default Vue.extend({
   mounted() {
     this.dataLoading = true;
     this.$request
-      .get('/api/get-list')
+      .get('/task')
       .then((res) => {
         if (res.code === 0) {
           const { list = [] } = res.data;
@@ -204,8 +203,8 @@ export default Vue.extend({
     handleClickDetail() {
       this.$router.push('/detail/base');
     },
-    handleSetupContract() {
-      this.$router.push('/dashboard/base');
+    handleCreateTask() {
+      this.$router.push('/task/upload');
     },
     handleClickDelete(row: { rowIndex: any }) {
       this.deleteIdx = row.rowIndex;

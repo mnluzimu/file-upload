@@ -15,7 +15,7 @@
       </template> -->
       <menu-content :navData="menu" />
       <template #operations>
-        <span class="version-container"> {{ !collapsed ? `TDesign Starter ${pgk.version}` : pgk.version }} </span>
+        <span class="version-container"> {{ !collapsed ? `Task Manager ${pgk.version}` : pgk.version }} </span>
       </template>
     </t-menu>
     <div :class="`${prefix}-side-nav-placeholder${collapsed ? '-hidden' : ''}`"></div>

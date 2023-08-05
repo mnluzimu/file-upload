@@ -18,7 +18,7 @@ const defaultRouterList = [
   },
   {
     path: '*',
-    redirect: '/dashboard/base',
+    redirect: '/task/list',
   },
   ...asyncRouterList,
 ];

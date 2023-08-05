@@ -134,26 +134,34 @@ export default {
     },
     onSubmit({ validateResult }) {
       if (validateResult === true) {
-        this.$message.success('新建成功');
         const formData = new FormData();
 
         console.log(this.$refs.fileInput.files[0])
         formData.append('file', this.$refs.fileInput.files[0]);
-        formData.append('user', "wangke");
-        formData.append('model', "gpt-4");
+        formData.append('user', this.formData.user);
+        formData.append('model', this.formData.model);
+        if (this.formData.model === 'gpt-4' || this.formData.model === 'gpt-4-code') {
+          formData.append('gpt_4', this.formData.quota);
+        }
+        else {
+          formData.append('gpt_3', this.formData.quota);
+        }
 
-        this.$request.post("http://10.158.217.11:8080/task", formData, {
+        this.$request.post("/task", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
         .then(response => {
           console.log('File uploaded successfully', response.data);
+          this.$message.success('新建成功');
           // Do something with the response
+          this.$router.push('/task/list');
         })
         .catch(error => {
           console.error('Error uploading file', error);
           // Handle the error
+          this.$message.error('创建失败');
         });
       }
     },
